@@ -3,4 +3,4 @@ Skillable TV
 
 An old project revived - a youtube television, now fully client side.
 
-Read more - at [Rogwel](http://rogwel.org/)
+Read more - at [Rogwel](http://rogwel.org/repositories/sktv/)
