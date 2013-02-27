@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<div id="player"></div>
+		<script>
+
+			function sec(mins, secs){ return (mins*60) + secs; }
+
+			var videos = [
+				{ id: "btqZejLvZFU", time: sec(3,44)},
+				{ id: "OzHq2fDWH2I", time: sec(3,43)},
+				{ id: "WhRBeW8IOgs", time: sec(4,17)},
+				{ id: "X17i0K5gc3g", time: sec(3,42)},
+				{ id: "WioKSZaLd2c", time: sec(3,28)},
+				{ id: "8ZQ2tvqLgok", time: sec(3,46)},
+				{ id: "_JGaQ3g8WU4", time: sec(3,20)},
+				{ id: "_XYpFtQYAcg", time: sec(2,21)}
+			];
+
+			var timetotal = 0;
+			for(i in videos){ timetotal += videos[i].time; }
+
+			function playing(){
+				var date = new Date();
+				var time = date.getTime() / 1000;
+				time += date.getTimezoneOffset() * 60;
+				
+				time = time % timetotal;
+				for(i in videos){
+					if(time <= videos[i].time){
+						return { offset: time, id: videos[i].id };
+					}
+					time -= videos[i].time;
+				}
+			}
+
+			var player;
+
+			function onYouTubeIframeAPIReady() {
+				player = new YT.Player('player', { height: '390', width: '640', events: { 'onReady': onPlayerReady }});
+			}
+	
+			function onPlayerReady(event) {
+				player.setVolume(5);
+				setInterval(function() {
+					var current = playing();
+					if(Math.abs(current.offset - player.getCurrentTime()) > 10){
+						player.loadVideoById(current.id, current.offset);
+						player.seekTo(current.offset, true);
+					}
+				}, 100);
+			}
+
+		</script>
+		<script src="https://www.youtube.com/iframe_api" async="true"></script>
+	</body>
+</html>
