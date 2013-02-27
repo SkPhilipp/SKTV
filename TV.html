@@ -4,8 +4,11 @@
 		<div id="player"></div>
 		<script>
 
+
+			//	quick function for (minute, second) notation
 			function sec(mins, secs){ return (mins*60) + secs; }
 
+			//	list of all videos
 			var videos = [
 				{ id: "btqZejLvZFU", time: sec(3,44)},
 				{ id: "OzHq2fDWH2I", time: sec(3,43)},
@@ -17,9 +20,15 @@
 				{ id: "_XYpFtQYAcg", time: sec(2,21)}
 			];
 
+			//	var timetotal will hold the sum of all videos' time.
+			//	using timetotal makes calculating the point at where we should be
+			//	in the list of videos much easier, we treat the list as one
+			//	big video.
 			var timetotal = 0;
 			for(i in videos){ timetotal += videos[i].time; }
 
+			//	calculates the current video we should be seeing, and how many seconds we should be into the video.
+			//	returns something like { offset: 30, id: "OzHq2fDWH2I" }, ie. 30 seconds into video OzHq2fDWH2I
 			function playing(){
 				var date = new Date();
 				var time = date.getTime() / 1000;
@@ -34,16 +43,21 @@
 				}
 			}
 
+			//	var player will hold the reference to the actual player's youtube api
 			var player;
 
+			//	on api ready
 			function onYouTubeIframeAPIReady() {
 				player = new YT.Player('player', { height: '390', width: '640', events: { 'onReady': onPlayerReady }});
 			}
 	
+			//	on player ready
 			function onPlayerReady(event) {
 				player.setVolume(5);
 				setInterval(function() {
 					var current = playing();
+					//	check if we should be seeing something different, ie. we are lagging behind or the user is messing around
+					//	maximum allowed difference in seconds between where we are and should be defined as 10 seconds
 					if(Math.abs(current.offset - player.getCurrentTime()) > 10){
 						player.loadVideoById(current.id, current.offset);
 						player.seekTo(current.offset, true);
@@ -52,6 +66,7 @@
 			}
 
 		</script>
+		<!-- async load on youtube iframe api -->
 		<script src="https://www.youtube.com/iframe_api" async="true"></script>
 	</body>
 </html>
